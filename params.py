@@ -1,3 +1,6 @@
+import os
+PROJECT_PATH = os.path.join('/home/mrugank/Sciurid Lab/codes/july_analysis')
+
 species_list = ['palmarum', 'pennanti', 'tristriatus', 'sublineatus']
 
 accepted_columns = ['Selection',	'View',	'Channel',	'Begin Time (s)',	'End Time (s)',	'Low Freq (Hz)',
@@ -25,10 +28,21 @@ accepted_elements_note = ['LD', 'RD', 'IU', 'IU-RD', 'IU-LD', 'S', 'IS', 'NS', '
 
 z_score = 1.96
 
-bout_difference_dict = {'palmarum': 0.82, 'pennanti': 1.17, 'tristriatus': 0.67, 'dusky': 0.5, 'sublineatus': 0.5}
-sub_bout_threshold = 0.15
+bout_difference_dict = {'palmarum': 0.83, 'pennanti': 1.39, 'tristriatus': 0.71, 'sublineatus': 2.1}
+sample_threshold_dict = {'F. palmarum': 33, 'F. pennanti': 33, 'F. tristriatus': 70, 'F. sublineatus': 40}
+
+sub_bout_difference_dict = {'palmarum': 0.15, 'pennanti': 0.1, 'tristriatus': 0.15, 'sublineatus' : 0.1}
+sub_bout_difference_dict_F = {'F. palmarum': 0.15, 'F. pennanti': 0.1, 'F. tristriatus': 0.15, 'F. sublineatus' : 0.1}
 bins_dict = {'palmarum': 38000, 'pennanti': 15000, 'tristriatus': 6000, 'sublineatus': 4000}
 
-master_df_columns = ['File_name', 'Species', 'Low Freq (Hz)', 'High Freq (Hz)', 'Delta Freq (Hz)','Delta Time (s)',
+columns = ['File_name', 'Species', 'Low Freq (Hz)', 'High Freq (Hz)', 'Delta Freq (Hz)','Delta Time (s)',
                     'Inter_note_difference (s)', 'Location', 'Latitude', 'Longitude', 'Note', 'Quality', 'Bout', 'Sub-bout']
-master_df_numerical_columns = ['Low Freq (Hz)', 'High Freq (Hz)', 'Delta Freq (Hz)','Delta Time (s)', 'Inter_note_difference (s)']
+acoustic_features = ['PFC Max Freq (Hz)',
+        'PFC Min Freq (Hz)','BW 90% (Hz)', 'Agg Entropy (bits)','PFC Max Slope (Hz/ms)', 'PFC Avg Slope (Hz/ms)',
+       'PFC Min Slope (Hz/ms)', 'Center Time Rel.', 'Dur 90% (s)', 'PFC Num Inf Pts']
+#acoustic_features = ['Low Freq (Hz)', 'High Freq (Hz)', 'Delta Freq (Hz)','Delta Time (s)', 'Inter_note_difference (s)']
+numerical_columns = ['Low Freq (Hz)', 'High Freq (Hz)', 'Delta Freq (Hz)','Delta Time (s)', 'Inter_note_difference (s)']
+numerical_columns_with_fname = ['File_name', 'Low Freq (Hz)', 'High Freq (Hz)', 'Delta Freq (Hz)','Delta Time (s)', 'Inter_note_difference (s)']
+#numerical_columns_with_fname = ['File_name', 'PFC Max Freq (Hz)', 'PFC Min Freq (Hz)', 'BW 90% (Hz)', 'Agg Entropy (bits)']
+
+cat_columns = ['File_name', 'Species', 'Location', 'Latitude', 'Longitude']

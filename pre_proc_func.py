@@ -9,7 +9,7 @@ from plots import line_with_error
 from params import *
 
 
-def screen_tables(PROJECT_PATH, species_list):
+def screen_tables(species_list):
     error = 0
     for spp in species_list:
         directory_path = os.path.join(PROJECT_PATH, spp)
@@ -89,7 +89,7 @@ def screen_tables(PROJECT_PATH, species_list):
         return False
 
 
-def saturation_analysis(PROJECT_PATH, metric, species_list, ci = 95):
+def saturation_analysis(metric, species_list, ci = 95):
     rn.seed(42)
     for spp in species_list:
         # load annotation files
@@ -138,7 +138,7 @@ def saturation_analysis(PROJECT_PATH, metric, species_list, ci = 95):
             # Create plots
             line_with_error(df_good, sample_df, metric, LB, UB, ci, spp, annotation_file, save_folder)
 
-def generate_master_df(PROJECT_PATH, species_list, location_df):
+def generate_master_df(species_list, location_df):
     master_df = pd.DataFrame()
     for spp in species_list:
         directory_path = os.path.join(PROJECT_PATH, spp)
@@ -167,7 +167,7 @@ def generate_master_df(PROJECT_PATH, species_list, location_df):
             sub_bout = []
             sub_bout_count = 0
             for sub_bout_difference in ann_df['Inter_note_difference (s)']:
-                if sub_bout_difference > sub_bout_threshold:
+                if sub_bout_difference > sub_bout_difference_dict[spp]:
                     sub_bout_count += 1
                 sub_bout.append(sub_bout_count)
             ann_df['Sub-bout'] = sub_bout
@@ -181,12 +181,80 @@ def generate_master_df(PROJECT_PATH, species_list, location_df):
                 ann_df['Longitude'] = location_df['long_3_Location'][location_df['12_Audio_file_name'] ==  bf].to_numpy()[0]
 
             # Trim columns
-            ann_df = ann_df[master_df_columns]
+            #ann_df = ann_df[master_df_columns]
 
             # For NAN rows, make Quality = P
-            for column in master_df_numerical_columns:
+            for column in acoustic_features:
                 ann_df.loc[(ann_df[column].isnull()), ['Quality']] = 'P'
                 ann_df[column] = ann_df[column].astype('float')
 
             master_df = master_df.append(ann_df, ignore_index = True)
     return master_df
+
+def generate_file_df(data):
+
+    # Create basic dataframe with all cat columns and median of features
+    cat_df = data[cat_columns].drop_duplicates(subset = ['File_name'])
+
+    med_df = data[numerical_columns_with_fname].groupby(['File_name']).median()
+    med_df.columns = 'Median ' + med_df.columns
+
+    min_df = data[numerical_columns_with_fname].groupby(['File_name']).min()
+    min_df.columns = 'Minimum ' + min_df.columns
+
+    max_df = data[numerical_columns_with_fname].groupby(['File_name']).max()
+    max_df.columns = 'Maximum ' + max_df.columns
+
+    avg_df = data[numerical_columns_with_fname].groupby(['File_name']).mean()
+    avg_df.columns = 'Mean ' + avg_df.columns
+
+    std_df = data[numerical_columns_with_fname].groupby(['File_name']).std()
+    std_df.columns = 'Stdev ' + std_df.columns
+
+    file_df = pd.merge(cat_df, med_df, on='File_name')
+    file_df = pd.merge(file_df, min_df, on='File_name')
+    file_df = pd.merge(file_df, max_df, on='File_name')
+    file_df = pd.merge(file_df, avg_df, on='File_name')
+    file_df = pd.merge(file_df, std_df, on='File_name')
+
+
+
+    for i in range(file_df.shape[0]):
+        ff = file_df.loc[i, 'File_name']
+        temp_ff_df = data[data['File_name'] == ff]
+
+        # Compute note, bout, sub-bout density for each file
+        annotation_time = temp_ff_df['End Time (s)'].max() - temp_ff_df['Begin Time (s)'].min()
+        note_count = temp_ff_df.shape[0]
+
+        if temp_ff_df['Sub-bout'].min() > 0:
+            sub_bout_count = temp_ff_df['Sub-bout'].max() - temp_ff_df['Sub-bout'].min()
+        else:
+            sub_bout_count = temp_ff_df['Sub-bout'].max() - temp_ff_df['Sub-bout'].min() + 1
+
+        if temp_ff_df['Bout'].min() > 0:
+            bout_count = temp_ff_df['Bout'].max() - temp_ff_df['Bout'].min()
+        else:
+            bout_count = temp_ff_df['Bout'].max() - temp_ff_df['Bout'].min() + 1
+
+        file_df.loc[i, 'Note density (notes per s)'] = note_count/annotation_time
+        file_df.loc[i, 'Sub-bout density (sub-bouts per s)'] = sub_bout_count/annotation_time
+        file_df.loc[i, 'Bout density (bouts per s)'] = bout_count/annotation_time
+
+        # Count of unique note types for each file
+        unique_notes_list = temp_ff_df['Note'].unique()
+        if 'NS' in unique_notes_list:
+            unique_notes_list = np.setdiff1d(unique_notes_list, np.array(['NS']))
+        file_df.loc[i, 'Unique note count'] = temp_ff_df['Note'].unique().shape[0]
+    #print(file_df.shape)
+    #print(file_df.columns)
+    #print(file_df.head())
+    #print(file_df.describe)
+        # Median features by bout and sub-bout
+        #temp_ff_bout_df = temp_ff_df.groupby(['Bout']).median()
+        #temp_ff_sub_bout_df = temp_ff_df.groupby(['Sub-bout']).median()
+        #print(temp_ff_bout_df.columns)
+        #bout_num_df = temp_ff_bout_df[[numerical_columns]]
+        #sub_bout_num_df = temp_ff_sub_bout_df[[numerical_columns]]
+        #print(bout_num_df.head())
+    return file_df
