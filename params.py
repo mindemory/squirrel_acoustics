@@ -1,5 +1,5 @@
 import os
-PROJECT_PATH = os.path.join('/home/mrugank/Sciurid Lab/codes/july_analysis')
+PROJECT_PATH = os.path.join('/Users/mrugankdake/Documents/Sciurid Lab/')
 
 species_list = ['palmarum', 'pennanti', 'tristriatus', 'sublineatus']
 
@@ -24,7 +24,7 @@ accepted_columns = ['Selection',	'View',	'Channel',	'Begin Time (s)',	'End Time 
 
 accepted_elements_note = ['LD', 'RD', 'IU', 'IU-RD', 'IU-LD', 'S', 'IS', 'NS', 'P', 'W', 'IU-RD-RE', 'IU-RD-LE', 'IU-LD-RE', 'RD-RE', 'LD-RE', 'IU-RE', 'T',
                      'lLD', 'lRD', 'lIU', 'lIU-RD', 'lIU-LD', 'lS', 'lIS', 'lP', 'lIU-LD-RE', 'lX3',
-                     'llLD', 'llRD', 'llIU', 'llIU-RD', 'llIU-LD', 'llS', 'llIS', 'llP']
+                     'llLD', 'llRD', 'llIU', 'llIU-RD', 'llIU-LD', 'llS', 'llIS', 'llP',  'lIU-RD-RE']
 
 z_score = 1.96
 

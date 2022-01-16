@@ -22,7 +22,7 @@ file_df = pd.read_csv(os.path.join(df_path, 'file_df.csv'))
 file_good_df = pd.read_csv(os.path.join(df_path, 'file_good_df.csv'))
 file_random_df = pd.read_csv(os.path.join(df_path, 'file_random_df.csv'))
 print()
-selected_features_notes = ['Low Freq (Hz)', 'Delta Freq (Hz)', 'High Freq (Hz)']
+selected_features_notes = ['PFC Max Freq (Hz)', 'PFC Min Freq (Hz)', 'BW 90% (Hz)']
 selected_features_files = ['Median Delta Freq (Hz)', 'Median High Freq (Hz)', 'Stdev High Freq (Hz)']
 
 print('Running Geographical Analysis')

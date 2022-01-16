@@ -7,6 +7,7 @@ from matplotlib import rc
 from params import *
 
 def line_with_error(main_data, sample_data, metric, LB, UB, ci, spp, annotation_file, save_folder):
+    print('test')
     sn.set(font_scale = 1)
     fig = plt.figure(figsize = (7, 7))
     sns_plot = sn.lineplot(data = sample_data, x = "Sample size", y = metric, ci = ci)

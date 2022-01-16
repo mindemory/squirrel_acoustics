@@ -33,6 +33,7 @@ location_df = pd.read_csv(location_path)
 # Add extension to file names wherever needed
 for i in range(location_df.shape[0]):
     if location_df.loc[i, '12_Audio_file_name'][-4:] != '.wav' and location_df.loc[i, '12_Audio_file_name'][-4:] != '.WAV':
+        #print(location_df.loc[i, '12_Audio_file_name'])
         location_df.loc[i, '12_Audio_file_name'] = location_df.loc[i, '12_Audio_file_name'] + '.wav'
 
 # Create master_df by concatenating all files

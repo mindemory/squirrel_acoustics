@@ -12,12 +12,14 @@ from params import *
 def screen_tables(species_list):
     error = 0
     for spp in species_list:
+        print(spp)
         directory_path = os.path.join(PROJECT_PATH, spp)
         annotation_files = os.listdir(directory_path)
         for annotation_file in annotation_files:
+            #print(annotation_file)
+
             annotation_path = os.path.join(directory_path, annotation_file)
             ann_df = pd.read_csv(annotation_path, delimiter = '\t')
-
             # Check if any column is absent
             present_columns = ann_df.columns
             for ac_col in accepted_columns:
@@ -87,7 +89,6 @@ def screen_tables(species_list):
         return True
     else:
         return False
-
 
 def saturation_analysis(metric, species_list, ci = 95):
     rn.seed(42)
@@ -171,14 +172,16 @@ def generate_master_df(species_list, location_df):
                     sub_bout_count += 1
                 sub_bout.append(sub_bout_count)
             ann_df['Sub-bout'] = sub_bout
-
+            #print(location_df['12_Audio_file_name'].to_numpy())
             # Location, Latitude, Longitude
             for bf in ann_df['Begin File'].unique():
                 if bf[:4] == 'Copy':
                     bf = bf[8:]
-                ann_df['Location'] = location_df['Site'][location_df['12_Audio_file_name'] ==  bf].to_numpy()[0]
-                ann_df['Latitude'] = location_df['lat_3_Location'][location_df['12_Audio_file_name'] ==  bf].to_numpy()[0]
-                ann_df['Longitude'] = location_df['long_3_Location'][location_df['12_Audio_file_name'] ==  bf].to_numpy()[0]
+                print(bf.lower())
+                #print(location_df['Site'][location_df['12_Audio_file_name'].str.lower() ==  bf.lower()])
+                ann_df['Location'] = location_df['Site'][location_df['12_Audio_file_name'].str.lower() ==  bf.lower()].to_numpy()[0]
+                ann_df['Latitude'] = location_df['lat_3_Location'][location_df['12_Audio_file_name'].str.lower() ==  bf.lower()].to_numpy()[0]
+                ann_df['Longitude'] = location_df['long_3_Location'][location_df['12_Audio_file_name'].str.lower() ==  bf.lower()].to_numpy()[0]
 
             # Trim columns
             #ann_df = ann_df[master_df_columns]
