@@ -7,7 +7,6 @@ from matplotlib import rc
 from params import *
 
 def line_with_error(main_data, sample_data, metric, LB, UB, ci, spp, annotation_file, save_folder):
-    print('test')
     sn.set(font_scale = 1)
     fig = plt.figure(figsize = (7, 7))
     sns_plot = sn.lineplot(data = sample_data, x = "Sample size", y = metric, ci = ci)
@@ -46,11 +45,11 @@ def inter_note_distribution(species_list, master_df_bout_version):
     for i in range(len(species_list)):
         spp = species_list[i]
         temp_df = master_df_bout_version[master_df_bout_version['Species'] == 'F. ' + spp]['Inter_note_difference (s)']
-        temp_df.hist(ax = ax[i], bins = bins_dict[spp], xlabelsize = 12, ylabelsize = 11)
+        temp_df.hist(ax = ax[i], density = 1, bins = bins_dict[spp], xlabelsize = 12, ylabelsize = 11)
         ax[i].set_title('F. ' + spp, fontsize = 14)
         if i == 3:
             ax[i].set_xlabel('Internote differences (s)', fontsize = 12)
-        ax[i].set_ylabel('Frequency', fontsize = 12)
+        ax[i].set_ylabel('Frequency (%)', fontsize = 12)
         ax[i].set_xlim(-0.1, 2)
         ax[i].set_xticks(np.arange(-0.1, 2, 0.1))
         ax[i].grid(False)

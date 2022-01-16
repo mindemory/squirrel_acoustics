@@ -1,8 +1,12 @@
 import os
+
+# The location to the folder that stores the data
 PROJECT_PATH = os.path.join('/Users/mrugankdake/Documents/Sciurid Lab/')
 
+# The list of species
 species_list = ['palmarum', 'pennanti', 'tristriatus', 'sublineatus']
 
+# All the columns that are present in the final dataframe obtained from RavenPro
 accepted_columns = ['Selection',	'View',	'Channel',	'Begin Time (s)',	'End Time (s)',	'Low Freq (Hz)',
                     'High Freq (Hz)',	'Begin File',	'Begin Path', 'End File',	'End Path',	'File Offset (s)',
                     'Agg Entropy (bits)',	'Avg Amp (U)',	'Avg Entropy (bits)',	'Avg Power Density (dB FS)',
@@ -22,17 +26,22 @@ accepted_columns = ['Selection',	'View',	'Channel',	'Begin Time (s)',	'End Time 
                     'Time 25% (s)',	'Time 25% Rel.',	'Time 5% (s)',	'Time 5% Rel.',	'Time 75% (s)',	'Time 75% Rel.',
                     'Time 95% (s)',	'Time 95% Rel.', 'Note', 'Quality',	'Bout',	'Sub-bout']
 
+# All the unique note names that are used in annotations
 accepted_elements_note = ['LD', 'RD', 'IU', 'IU-RD', 'IU-LD', 'S', 'IS', 'NS', 'P', 'W', 'IU-RD-RE', 'IU-RD-LE', 'IU-LD-RE', 'RD-RE', 'LD-RE', 'IU-RE', 'T',
                      'lLD', 'lRD', 'lIU', 'lIU-RD', 'lIU-LD', 'lS', 'lIS', 'lP', 'lIU-LD-RE', 'lX3',
                      'llLD', 'llRD', 'llIU', 'llIU-RD', 'llIU-LD', 'llS', 'llIS', 'llP',  'lIU-RD-RE']
 
+# The z-score used for computing confidence intervals
 z_score = 1.96
 
+# The threshold bout and sub-bout internote distance computed using thresholding analysis
 bout_difference_dict = {'palmarum': 0.83, 'pennanti': 1.39, 'tristriatus': 0.71, 'sublineatus': 2.1}
-sample_threshold_dict = {'F. palmarum': 33, 'F. pennanti': 33, 'F. tristriatus': 70, 'F. sublineatus': 40}
-
 sub_bout_difference_dict = {'palmarum': 0.15, 'pennanti': 0.1, 'tristriatus': 0.15, 'sublineatus' : 0.1}
 sub_bout_difference_dict_F = {'F. palmarum': 0.15, 'F. pennanti': 0.1, 'F. tristriatus': 0.15, 'F. sublineatus' : 0.1}
+
+# The sample size of notes computed using Saturation analysis
+sample_threshold_dict = {'F. palmarum': 33, 'F. pennanti': 33, 'F. tristriatus': 70, 'F. sublineatus': 40}
+
 bins_dict = {'palmarum': 38000, 'pennanti': 15000, 'tristriatus': 6000, 'sublineatus': 4000}
 
 columns = ['File_name', 'Species', 'Low Freq (Hz)', 'High Freq (Hz)', 'Delta Freq (Hz)','Delta Time (s)',

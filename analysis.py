@@ -54,7 +54,7 @@ for bf in master_df['File_name'].unique():
 #     print(LB, UB)
 #     print()
 print("Saving internote distribution")
-#inter_note_distribution(species_list, master_df_bout_version)
+inter_note_distribution(species_list, master_df_bout_version)
 
 print("Saving correlation plot")
 corr_note_df = master_good_df[acoustic_features]
