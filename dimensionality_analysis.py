@@ -10,18 +10,26 @@ import matplotlib.pyplot as plt
 from params import *
 from plots import scatter_plot
 
-def pca_analysis(X, y, title, filename):
+def pca_analysis(fdf, X, y, title, filename):
     pca = PCA(n_components = 2, random_state = 42)
     pca_dataset = X.apply(pd.to_numeric)
     X_pca = pca.fit_transform(pca_dataset)
+    #print(X_pca.shape)
+    #print(X.index)
     principalDf = pd.DataFrame(data = X_pca,
             columns = ['Principal Component 1', 'Principal Component 2'])
     final_df = pd.concat([principalDf, y], axis = 1)
+    print(final_df.shape)
     target_names = np.unique(y)
-
+    #loading_scores = pd.Series(pca.components_[0], index = X.index)
+    #print(loading_scores)
     # Percentage of variance explained for each components
     print('explained variance ratio (first two components): %s'
           % str(pca.explained_variance_ratio_))
+
+    bibdx = np.where((final_df['Species'] == 'F. pennanti') & (final_df['Principal Component 1'] < 0))
+    blurb = fdf.loc[bibdx]
+    print(blurb['Location'])
 
     ax = scatter_plot(final_df, target_names)
     ax.set_xlabel('PC 1: ' + str(round(pca.explained_variance_ratio_[0], 4) * 100) + '%')
@@ -30,8 +38,6 @@ def pca_analysis(X, y, title, filename):
     save_path = os.path.join(PROJECT_PATH, 'Figures/' + filename)
     plt.savefig(save_path)
     #plt.close(fig)
-
-
 
 def umap_analysis(X, y, title, filename):
     n = 20
@@ -47,7 +53,7 @@ def umap_analysis(X, y, title, filename):
     plt.savefig(save_path)
     #plt.close(fig)
 
-def lda_analysis(X, y, title, filename):
+def lda_analysis(fdf, X, y, title, filename):
     lda = LinearDiscriminantAnalysis(n_components = 2)
     lda_dataset = X.apply(pd.to_numeric)
     X_lda = lda.fit_transform(lda_dataset, y)
@@ -59,6 +65,10 @@ def lda_analysis(X, y, title, filename):
     # Percentage of variance explained for each components
     print('explained variance ratio (first two components): %s'
           % str(lda.explained_variance_ratio_))
+
+    bibdx = np.where((final_df['Species'] == 'F. pennanti') & (final_df['Principal Component 1'] < 0))
+    blurb = fdf.loc[bibdx]
+    print(blurb['Location'])
 
     ax = scatter_plot(final_df, target_names)
     ax.set_xlabel('PC 1: ' + str(round(lda.explained_variance_ratio_[0], 4) * 100) + '%')

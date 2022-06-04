@@ -16,9 +16,11 @@ def screen_tables(species_list):
     for spp in species_list:
         print(spp)
         directory_path = os.path.join(PROJECT_PATH, spp)
-        annotation_files = os.listdir(directory_path) # list of all annotation files for a given species
+        
+        annotation_files = [f for f in os.listdir(directory_path) if not f.startswith('.')] # list of all annotation files for a given species
         for annotation_file in annotation_files:
             annotation_path = os.path.join(directory_path, annotation_file)
+            #print(annotation_file)
             ann_df = pd.read_csv(annotation_path, delimiter = '\t')
 
             # Check if any column is absent
@@ -100,7 +102,7 @@ def saturation_analysis(metric, species_list, ci = 95):
         save_folder = os.path.join(PROJECT_PATH, 'Figures/Saturation Analysis ' + metric + '/', spp)
         if not os.path.exists(save_folder):
             os.makedirs(save_folder)
-        annotation_files = os.listdir(directory_path)
+        annotation_files = [f for f in os.listdir(directory_path) if not f.startswith('.')]
         if spp != 'sublineatus':
             annotation_files = rn.sample(annotation_files, 20) # a random set of 20 files are chosen for saturation analysis
 
@@ -145,7 +147,7 @@ def generate_master_df(species_list, location_df):
     master_df = pd.DataFrame()
     for spp in species_list:
         directory_path = os.path.join(PROJECT_PATH, spp)
-        annotation_files = os.listdir(directory_path) # List of all annotation files for a given species
+        annotation_files = [f for f in os.listdir(directory_path) if not f.startswith('.')] # List of all annotation files for a given species
 
         for annotation_file in annotation_files:
             annotation_path = os.path.join(directory_path, annotation_file)
@@ -216,8 +218,6 @@ def generate_file_df(data):
     file_df = pd.merge(file_df, max_df, on='File_name')
     file_df = pd.merge(file_df, avg_df, on='File_name')
     file_df = pd.merge(file_df, std_df, on='File_name')
-
-
 
     for i in range(file_df.shape[0]):
         ff = file_df.loc[i, 'File_name']

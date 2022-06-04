@@ -52,6 +52,7 @@ acoustic_features = ['PFC Max Freq (Hz)',
 #acoustic_features = ['Low Freq (Hz)', 'High Freq (Hz)', 'Delta Freq (Hz)','Delta Time (s)', 'Inter_note_difference (s)']
 numerical_columns = ['Low Freq (Hz)', 'High Freq (Hz)', 'Delta Freq (Hz)','Delta Time (s)', 'Inter_note_difference (s)']
 numerical_columns_with_fname = ['File_name', 'Low Freq (Hz)', 'High Freq (Hz)', 'Delta Freq (Hz)','Delta Time (s)', 'Inter_note_difference (s)']
+numerical_columns_with_locname = ['Species', 'Note', 'Location', 'Low Freq (Hz)', 'High Freq (Hz)', 'Delta Freq (Hz)','Delta Time (s)', 'Inter_note_difference (s)']
 #numerical_columns_with_fname = ['File_name', 'PFC Max Freq (Hz)', 'PFC Min Freq (Hz)', 'BW 90% (Hz)', 'Agg Entropy (bits)']
 
 cat_columns = ['File_name', 'Species', 'Location', 'Latitude', 'Longitude']
