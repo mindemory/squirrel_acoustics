@@ -23,8 +23,13 @@ file_good_df = pd.read_csv(os.path.join(df_path, 'file_good_df.csv'))
 file_random_df = pd.read_csv(os.path.join(df_path, 'file_random_df.csv'))
 print()
 selected_features_notes = ['PFC Max Freq (Hz)', 'PFC Min Freq (Hz)', 'BW 90% (Hz)']
-selected_features_files = ['Median Delta Freq (Hz)', 'Median High Freq (Hz)', 'Stdev High Freq (Hz)']
-
+#selected_features_files = ['Median Delta Freq (Hz)', 'Median High Freq (Hz)', 'Stdev High Freq (Hz)',
+#    ]
+selected_features_files = ['Median Low Freq (Hz)', 'Median High Freq (Hz)',
+       'Median Delta Freq (Hz)', 'Median Delta Time (s)',
+       'Median Inter_note_difference (s)', 'Note density (notes per s)',
+       'Sub-bout density (sub-bouts per s)', 'Bout density (bouts per s)',
+       'Unique note count']
 print('Running Geographical Analysis')
 #geo_distance(file_df.drop(columns = cat_columns).columns, file_df, type = 'notes')
 #geo_distance(file_df.drop(columns = cat_columns).columns, file_df, type = 'files')
@@ -52,15 +57,15 @@ for bf in master_df['File_name'].unique():
 #     print()
 
 
-# print("Saving correlation plot")
-# corr_note_df = master_good_df[acoustic_features]
-# corr_note_Matrix = corr_note_df.corr()
-# heatmap(corr_note_Matrix, suptitle = 'Heat Map for correlations', filename = 'master_correl_heat_map_notes.png')
+print("Saving correlation plot")
+corr_note_df = master_good_df[acoustic_features]
+corr_note_Matrix = corr_note_df.corr()
+heatmap(corr_note_Matrix, suptitle = 'Heat Map for correlations', filename = 'master_correl_heat_map_notes.png')
 
-# corr_file_df = file_good_df.drop(columns = cat_columns)
-# corr_file_Matrix = corr_file_df.corr()
-# heatmap(corr_file_Matrix, suptitle = 'Heat Map for correlations', filename = 'master_correl_heat_map_files.png')
-# print()
+corr_file_df = file_good_df.drop(columns = cat_columns)
+corr_file_Matrix = corr_file_df.corr()
+heatmap(corr_file_Matrix, suptitle = 'Heat Map for correlations', filename = 'master_correl_heat_map_files.png')
+print()
 
 # print('NOTE LEVEL ANALYSIS')
 # print('Running Classifiers')
@@ -100,29 +105,28 @@ scaled_features = sc.fit_transform(X)
 X_scaled = pd.DataFrame(scaled_features, index = X.index, columns = X.columns)
 y = file_df['Species']
 #print(X.head())
-# print('Logistic Regression')
-# logreg(X_scaled, y, title = 'Feature Importance Logistic Regression (files)',
-#     filename = 'logistic_regression_feature_importance_files.png')
-# print()
+print('Logistic Regression')
+logreg(X_scaled, y, title = 'Feature Importance Logistic Regression (files)',
+    filename = 'logistic_regression_feature_importance_files.png')
+print()
 
-# print('Decision Tree Classifier')
-# dtc(X_scaled, y, title = 'Feature Importance Decision Tree Classifier (files)',
-#     filename = 'decision_tree_classifier_feature_importance_files.png')
-# print()
+print('Decision Tree Classifier')
+dtc(X_scaled, y, title = 'Feature Importance Decision Tree Classifier (files)',
+    filename = 'decision_tree_classifier_feature_importance_files.png')
+print()
 
-# print('Random Forest Classifier')
-# rtf(X_scaled, y, title = 'Feature Importance Random Forest Classifier (files)',
-#     filename = 'random_forest_classifier_feature_importance_files.png')
-# print()
+print('Random Forest Classifier')
+rtf(X_scaled, y, title = 'Feature Importance Random Forest Classifier (files)',
+    filename = 'random_forest_classifier_feature_importance_files.png')
+print()
 
 print('Running PCA, UMAP, and LDA')
 pca_analysis(file_df, X_scaled, y, title = 'PCA for species (files)', filename = 'pca_files_all_feats.png')
-
 umap_analysis(file_df, X_scaled, y, title = 'UMAP for species (files)', filename = 'umap_files_all_feats.png')
 lda_analysis(file_df, X_scaled, y, title = 'LDA for species (files)', filename = 'lda_files_all_feats.png')
 
-pca_analysis(X_scaled[selected_features_files], y, title = 'PCA for species (files)', filename = 'pca_files_3_feats.png')
-umap_analysis(X_scaled[selected_features_files], y, title = 'UMAP for species (files)', filename = 'umap_files_3_feats.png')
-lda_analysis(X_scaled[selected_features_files], y, title = 'LDA for species (files)', filename = 'lda_files_3_feats.png')
+pca_analysis(file_df, X_scaled[selected_features_files], y, title = 'PCA for species (files)', filename = 'pca_files_3_feats.png')
+umap_analysis(file_df, X_scaled[selected_features_files], y, title = 'UMAP for species (files)', filename = 'umap_files_3_feats.png')
+lda_analysis(file_df, X_scaled[selected_features_files], y, title = 'LDA for species (files)', filename = 'lda_files_3_feats.png')
 
 print()

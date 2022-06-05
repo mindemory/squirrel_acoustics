@@ -32,15 +32,13 @@ def note_stats_master(df, df_folder):
             fig = plt.figure(figsize = (7, 7))
             col = numerical_columns[ii]
             sns_plot = sn.violinplot(x = 'Location', y = col, data = temp_df_sp)
+            plt.xticks(rotation= 45)
 
             fig_name = 'species_' + spp + '_locations_'+col
             sns_plot.set(title = fig_name)
             save_path = os.path.join(df_folder, 'stats_plots_notes/' + fig_name + '.png')
             plt.savefig(save_path)
             plt.close(fig)
-    
-    
-   
 
 def note_stats_file(df, df_folder, cols, cols_test):
     #for spp in species_list:
@@ -66,6 +64,7 @@ def note_stats_file(df, df_folder, cols, cols_test):
             fig = plt.figure(figsize = (7, 7))
             col = cols_test[ii]
             sns_plot = sn.violinplot(x = 'Location', y = col, data = temp_df_sp)
+            plt.xticks(rotation= 45)
 
             fig_name = 'species_' + spp + '_locations_'+col
             sns_plot.set(title = fig_name)
