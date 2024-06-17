@@ -193,7 +193,7 @@ def generate_master_df(species_list, location_df):
             master_df = master_df.append(ann_df, ignore_index = True)
     return master_df
 
-def generate_file_df(data):
+def generate_file_df(data, location_df):
 
     # Create basic dataframe with all cat columns and median of features
     cat_df = data[cat_columns].drop_duplicates(subset = ['File_name'])
@@ -246,6 +246,17 @@ def generate_file_df(data):
         if 'NS' in unique_notes_list:
             unique_notes_list = np.setdiff1d(unique_notes_list, np.array(['NS']))
         file_df.loc[i, 'Unique note count'] = temp_ff_df['Note'].unique().shape[0]
+    
+    for feat in loc_columns:
+        #print(feat)
+        temp_aa = np.zeros((len(file_df['Begin File']), 1))
+        for ii in range(len(file_df['Begin File'])):
+            bf = file_df['Begin File'][ii]
+            if bf[:4] == 'Copy':
+                bf = bf[8:]
+            #print(bf)
+            temp_aa[ii] = location_df[feat][location_df['12_Audio_file_name'].str.lower() ==  bf.lower()].to_numpy()[0]
+        file_df[feat] = temp_aa       
     #print(file_df.shape)
     #print(file_df.columns)
     #print(file_df.head())

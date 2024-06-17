@@ -32,7 +32,7 @@ selected_features_files = ['Median Low Freq (Hz)', 'Median High Freq (Hz)',
        'Unique note count']
 print('Running Geographical Analysis')
 #geo_distance(file_df.drop(columns = cat_columns).columns, file_df, type = 'notes')
-#geo_distance(file_df.drop(columns = cat_columns).columns, file_df, type = 'files')
+geo_distance(file_df.drop(columns = cat_columns).columns, file_df, type = 'files')
 
 master_df_bout_version = pd.DataFrame()
 for bf in master_df['File_name'].unique():

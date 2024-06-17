@@ -27,9 +27,8 @@ else:
 print()
 
 # Load Location File
-location_path = os.path.join(PROJECT_PATH, 'locations.csv')
+location_path = os.path.join(PROJECT_PATH, 'locations_new.csv')
 location_df = pd.read_csv(location_path)
-
 # Add extension to file names wherever needed
 for i in range(location_df.shape[0]):
     if location_df.loc[i, '12_Audio_file_name'][-4:] != '.wav' and location_df.loc[i, '12_Audio_file_name'][-4:] != '.WAV':
@@ -47,7 +46,7 @@ master_good_df = master_df[master_df['Quality'] == 'G']
 
 master_df.to_csv(os.path.join(df_folder, 'master_df.csv'), index = False)
 master_good_df.to_csv(os.path.join(df_folder, 'master_good_df.csv'), index = False)
-
+#print(master_df['File_name'])
 # Create a summary_df for all the files
 print()
 print('Creating summary_df')
@@ -74,9 +73,11 @@ for bf in beg_file:
     master_random_df = pd.concat([master_random_df, sp_df], ignore_index = True)
 master_random_df.to_csv(os.path.join(df_folder, 'master_random_df.csv'), index = False)
 
-file_df = ppf.generate_file_df(master_df)
-file_good_df = ppf.generate_file_df(master_good_df)
-file_random_df = ppf.generate_file_df(master_random_df)
+print()
+print('Creating file dataframes')
+file_df = ppf.generate_file_df(master_df, location_df)
+file_good_df = ppf.generate_file_df(master_good_df, location_df)
+file_random_df = ppf.generate_file_df(master_random_df, location_df)
 
 file_df.to_csv(os.path.join(df_folder, 'file_df.csv'), index = False)
 file_good_df.to_csv(os.path.join(df_folder, 'file_good_df.csv'), index = False)

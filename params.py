@@ -55,4 +55,9 @@ numerical_columns_with_fname = ['File_name', 'Low Freq (Hz)', 'High Freq (Hz)', 
 numerical_columns_with_locname = ['Species', 'Note', 'Location', 'Low Freq (Hz)', 'High Freq (Hz)', 'Delta Freq (Hz)','Delta Time (s)', 'Inter_note_difference (s)']
 #numerical_columns_with_fname = ['File_name', 'PFC Max Freq (Hz)', 'PFC Min Freq (Hz)', 'BW 90% (Hz)', 'Agg Entropy (bits)']
 
-cat_columns = ['File_name', 'Species', 'Location', 'Latitude', 'Longitude']
+cat_columns = ['File_name', 'Begin File', 'Species', 'Location', 'Latitude', 'Longitude']
+loc_columns = ['Human_pop_density_2019_100m', 'Human_pop_density_2020_100m',
+       'Built_settlement_2019', 'Built_settlement_2020', 'Nightlight_2019',
+       'forest_canopy_19(metres)', 'NDVI_19_20', 'Tmean_18_19 (C)',
+       'Pmean_17_18_19(mm)', 'Tmax_18_19(C)', 'Tmin_18_19(C)',
+       'Temperature seasonality (mm)', 'STDDEV', 'mean']
