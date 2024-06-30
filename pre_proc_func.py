@@ -89,8 +89,7 @@ def screen_tables(species_list):
                 print()
 
     if error == 0:
-        print('If no errors reported, you are good to go!')
-        return True
+        print('No errors reported, you are good to go!')
     else:
         return False
 
@@ -184,7 +183,20 @@ def generate_master_df(species_list, location_df):
                 ann_df['Location'] = location_df['Site'][location_df['12_Audio_file_name'].str.lower() ==  bf.lower()].to_numpy()[0]
                 ann_df['Latitude'] = location_df['lat_3_Location'][location_df['12_Audio_file_name'].str.lower() ==  bf.lower()].to_numpy()[0]
                 ann_df['Longitude'] = location_df['long_3_Location'][location_df['12_Audio_file_name'].str.lower() ==  bf.lower()].to_numpy()[0]
-
+                # Adding meta-data from layers (June 29 2024)
+                ann_df['HumanPopDensity2019'] = location_df['Human_pop_density_2019_100m'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
+                ann_df['HumanPopDensity2020'] = location_df['Human_pop_density_2020_100m'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
+                ann_df['BuiltSettlement2019'] = location_df['Built_settlement_2019'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
+                ann_df['BuiltSettlement2020'] = location_df['Built_settlement_2020'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
+                ann_df['Nightlight2019'] = location_df['Nightlight_2019'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
+                ann_df['ForestCanopy2019'] = location_df['forest_canopy_19(metres)'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
+                ann_df['NDVI'] = location_df['NDVA_19_20'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
+                ann_df['Tmean'] = location_df['Tmean_18_19 (C)'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
+                ann_df['Pmean'] = location_df['Pmean_17_18_19(mm)'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
+                ann_df['Tmax'] = location_df['Tmax_18_19(C)'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
+                ann_df['Tmin'] = location_df['Tmin_18_19(C)'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
+                ann_df['TempSeasonailty'] = location_df['Temperature seasonality (mm)'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
+                ann_df
             # For NAN rows, make Quality = P
             for column in acoustic_features:
                 ann_df.loc[(ann_df[column].isnull()), ['Quality']] = 'P'
@@ -254,7 +266,6 @@ def generate_file_df(data, location_df):
             bf = file_df['Begin File'][ii]
             if bf[:4] == 'Copy':
                 bf = bf[8:]
-            #print(bf)
             temp_aa[ii] = location_df[feat][location_df['12_Audio_file_name'].str.lower() ==  bf.lower()].to_numpy()[0]
         file_df[feat] = temp_aa       
     #print(file_df.shape)

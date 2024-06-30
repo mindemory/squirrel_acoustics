@@ -33,18 +33,42 @@ def pca_analysis(fdf, X, y, title, filename):
     ax.set_xlabel('PC 1: ' + str(round(pca.explained_variance_ratio_[0] * 100, 2)) + '%')
     ax.set_ylabel('PC 2: ' + str(round(pca.explained_variance_ratio_[1] * 100, 2)) + '%')
     ax.set_title('\n' + title + '\n')
-    save_path = os.path.join(PROJECT_PATH, 'Figures/' + filename)
+    if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures', 'dimred')):
+            os.mkdir(os.path.join(PROJECT_PATH, 'Figures', 'dimred'))
+    if 'notes' in filename:
+        save_path = os.path.join(PROJECT_PATH, 'Figures', 'dimred', 'notes', filename)
+        if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures', 'dimred', 'notes')):
+            os.mkdir(os.path.join(PROJECT_PATH, 'Figures', 'dimred', 'notes'))
+    elif 'files' in filename:
+        save_path = os.path.join(PROJECT_PATH, 'Figures', 'dimred', 'files', filename)
+        if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures', 'dimred', 'files')):
+            os.mkdir(os.path.join(PROJECT_PATH, 'Figures', 'dimred', 'files'))
+    else:
+        save_path = os.path.join(PROJECT_PATH, 'Figures', 'dimred', filename)
+        
     plt.savefig(save_path)
     
 
 def umap_analysis(fdf, X, y, title, filename):
-    n = 20
-    d = 0.5
+    n = 100 #20
+    d = 1 #0.5
     m = 'euclidean'
     title = ('UMAP with n_neighbors = {}, min_dist = {}, metric = {}'.format(n, d, m))
     embedding=umap.UMAP(n_neighbors= n, n_components = 2, min_dist = d, metric = m, random_state = 42).fit(X)
     umap.plot.points(embedding, labels = y, theme = 'viridis')
-    save_path = os.path.join(PROJECT_PATH, 'Figures/' + filename)
+    if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures', 'dimred')):
+            os.mkdir(os.path.join(PROJECT_PATH, 'Figures', 'dimred'))
+    if 'notes' in filename:
+        save_path = os.path.join(PROJECT_PATH, 'Figures', 'dimred', 'notes', filename)
+        if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures', 'dimred', 'notes')):
+            os.mkdir(os.path.join(PROJECT_PATH, 'Figures', 'dimred', 'notes'))
+    elif 'files' in filename:
+        save_path = os.path.join(PROJECT_PATH, 'Figures', 'dimred', 'files', filename)
+        if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures', 'dimred', 'files')):
+            os.mkdir(os.path.join(PROJECT_PATH, 'Figures', 'dimred', 'files'))
+    else:
+        save_path = os.path.join(PROJECT_PATH, 'Figures', 'dimred', filename)
+        
     plt.xlabel('UMAP 1')
     plt.ylabel('UMAP 2')
     plt.title('\n' + title + '\n')
@@ -71,5 +95,17 @@ def lda_analysis(fdf, X, y, title, filename):
     ax.set_xlabel('LD 1: ' + str(round(lda.explained_variance_ratio_[0] * 100, 2)) + '%')
     ax.set_ylabel('LD 2: ' + str(round(lda.explained_variance_ratio_[1] * 100, 2)) + '%')
     ax.set_title('\n' + title + '\n')
-    save_path = os.path.join(PROJECT_PATH, 'Figures/' + filename)
+    if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures', 'dimred')):
+            os.mkdir(os.path.join(PROJECT_PATH, 'Figures', 'dimred'))
+    if 'notes' in filename:
+        save_path = os.path.join(PROJECT_PATH, 'Figures', 'dimred', 'notes', filename)
+        if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures', 'dimred', 'notes')):
+            os.mkdir(os.path.join(PROJECT_PATH, 'Figures', 'dimred', 'notes'))
+    elif 'files' in filename:
+        save_path = os.path.join(PROJECT_PATH, 'Figures', 'dimred', 'files', filename)
+        if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures', 'dimred', 'files')):
+            os.mkdir(os.path.join(PROJECT_PATH, 'Figures', 'dimred', 'files'))
+    else:
+        save_path = os.path.join(PROJECT_PATH, 'Figures', 'dimred', filename)
+        
     plt.savefig(save_path)

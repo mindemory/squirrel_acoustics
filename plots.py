@@ -7,7 +7,7 @@ from matplotlib import rc
 from params import *
 
 def line_with_error(main_data, sample_data, metric, LB, UB, ci, spp, annotation_file, save_folder):
-    sn.set(font_scale = 1)
+    # sn.set(font_scale = 1)
     fig = plt.figure(figsize = (7, 7))
     sns_plot = sn.lineplot(data = sample_data, x = "Sample size", y = metric, ci = ci)
     plt.plot([0, main_data.shape[0] - 1], [LB, LB], 'k', linewidth = 2)
@@ -36,6 +36,9 @@ def note_distribution(data, species_list):
     df.T.plot.bar(ax = axes[1], stacked = True, title = '\nNote distribution within species\n', rot = 45,
                 colormap = 'gist_stern')
     axes[1].legend(bbox_to_anchor=(1.25, 0.95))
+    # Check if Figures exists
+    if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures')):
+        os.mkdir(os.path.join(PROJECT_PATH, 'Figures'))
     save_path = os.path.join(PROJECT_PATH, 'Figures/note_distribution.png')
     plt.savefig(save_path)
     plt.close(fig)
@@ -54,6 +57,9 @@ def inter_note_distribution(species_list, master_df_bout_version):
         ax[i].set_xticks(np.arange(-0.1, 2, 0.1))
         ax[i].grid(False)
     fig.subplots_adjust(wspace=0, hspace=0.5)
+    # Check if Figures exists
+    if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures')):
+        os.mkdir(os.path.join(PROJECT_PATH, 'Figures'))
     save_path = os.path.join(PROJECT_PATH, 'Figures/inter_note_distribution.png')
     plt.savefig(save_path)
     plt.close(fig)

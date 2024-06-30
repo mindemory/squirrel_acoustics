@@ -24,7 +24,19 @@ def logreg(X, y, title, filename):
     fig = feat_importance_plot(results, X)
     plt.title('\n' + title + '\n', fontsize = 16)
     plt.xlabel('Importance')
-    save_path = os.path.join(PROJECT_PATH, 'Figures/' + filename)
+    if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures', 'classifiers')):
+            os.mkdir(os.path.join(PROJECT_PATH, 'Figures', 'classifiers'))
+    if 'notes' in filename:
+        save_path = os.path.join(PROJECT_PATH, 'Figures', 'classifiers', 'notes', filename)
+        if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures', 'classifiers', 'notes')):
+            os.mkdir(os.path.join(PROJECT_PATH, 'Figures', 'classifiers', 'notes'))
+    elif 'files' in filename:
+        save_path = os.path.join(PROJECT_PATH, 'Figures', 'classifiers', 'files', filename)
+        if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures', 'classifiers', 'files')):
+            os.mkdir(os.path.join(PROJECT_PATH, 'Figures', 'classifiers', 'files'))
+    else:
+        save_path = os.path.join(PROJECT_PATH, 'Figures', 'classifiers', filename)
+        
     plt.savefig(save_path)
     plt.close(fig)
 
@@ -44,7 +56,19 @@ def dtc(X, y, title, filename):
     fig = feat_importance_plot(results, X)
     plt.title('\n' + title + '\n', fontsize = 16)
     plt.xlabel('Importance')
-    save_path = os.path.join(PROJECT_PATH, 'Figures/' + filename)
+    if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures', 'classifiers')):
+            os.mkdir(os.path.join(PROJECT_PATH, 'Figures', 'classifiers'))
+    if 'notes' in filename:
+        save_path = os.path.join(PROJECT_PATH, 'Figures', 'classifiers', 'notes', filename)
+        if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures', 'classifiers', 'notes')):
+            os.mkdir(os.path.join(PROJECT_PATH, 'Figures', 'classifiers', 'notes'))
+    elif 'files' in filename:
+        save_path = os.path.join(PROJECT_PATH, 'Figures', 'classifiers', 'files', filename)
+        if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures', 'classifiers', 'files')):
+            os.mkdir(os.path.join(PROJECT_PATH, 'Figures', 'classifiers', 'files'))
+    else:
+        save_path = os.path.join(PROJECT_PATH, 'Figures', 'classifiers', filename)
+        
     plt.savefig(save_path)
     plt.close(fig)
 
@@ -65,7 +89,19 @@ def rtf(X, y, title, filename):
     fig = feat_importance_plot(results, X)
     plt.title('\n' + title + '\n', fontsize = 16)
     plt.xlabel('Importance')
-    save_path = os.path.join(PROJECT_PATH, 'Figures/' + filename)
+    if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures', 'classifiers')):
+            os.mkdir(os.path.join(PROJECT_PATH, 'Figures', 'classifiers'))
+    if 'notes' in filename:
+        save_path = os.path.join(PROJECT_PATH, 'Figures', 'classifiers', 'notes', filename)
+        if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures', 'classifiers', 'notes')):
+            os.mkdir(os.path.join(PROJECT_PATH, 'Figures', 'classifiers', 'notes'))
+    elif 'files' in filename:
+        save_path = os.path.join(PROJECT_PATH, 'Figures', 'classifiers', 'files', filename)
+        if not os.path.exists(os.path.join(PROJECT_PATH, 'Figures', 'classifiers', 'files')):
+            os.mkdir(os.path.join(PROJECT_PATH, 'Figures', 'classifiers', 'files'))
+    else:
+        save_path = os.path.join(PROJECT_PATH, 'Figures', 'classifiers', filename)
+        
     plt.savefig(save_path)
     plt.close(fig)
 

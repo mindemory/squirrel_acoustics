@@ -20,7 +20,9 @@ def note_stats_master(df, df_folder):
 
         fig_name = 'species_'+col
         sns_plot.set(title = fig_name)
-        save_path = os.path.join(df_folder, 'stats_plots_notes/' + fig_name + '.png')
+        if not os.path.exists(os.path.join(df_folder, 'stats_plots_notes')):
+            os.mkdir(os.path.join(df_folder, 'stats_plots_notes'))
+        save_path = os.path.join(df_folder, 'stats_plots_notes', fig_name + '.png')
         plt.savefig(save_path)
         plt.close(fig)
     
@@ -36,7 +38,9 @@ def note_stats_master(df, df_folder):
 
             fig_name = 'species_' + spp + '_locations_'+col
             sns_plot.set(title = fig_name)
-            save_path = os.path.join(df_folder, 'stats_plots_notes/' + fig_name + '.png')
+            if not os.path.exists(os.path.join(df_folder, 'stats_plots_notes', spp)):
+                os.mkdir(os.path.join(df_folder, 'stats_plots_notes', spp))
+            save_path = os.path.join(df_folder, 'stats_plots_notes', spp, fig_name + '.png')
             plt.savefig(save_path)
             plt.close(fig)
 
@@ -52,7 +56,9 @@ def note_stats_file(df, df_folder, cols, cols_test):
 
         fig_name = 'species_'+col
         sns_plot.set(title = fig_name)
-        save_path = os.path.join(df_folder, 'stats_plots_files/' + fig_name + '.png')
+        if not os.path.exists(os.path.join(df_folder, 'stats_plots_files')):
+            os.mkdir(os.path.join(df_folder, 'stats_plots_files'))
+        save_path = os.path.join(df_folder, 'stats_plots_files', fig_name + '.png')
         plt.savefig(save_path)
         plt.close(fig)
     
@@ -66,9 +72,11 @@ def note_stats_file(df, df_folder, cols, cols_test):
             sns_plot = sn.violinplot(x = 'Location', y = col, data = temp_df_sp)
             plt.xticks(rotation= 45)
 
-            fig_name = 'species_' + spp + '_locations_'+col
+            fig_name = 'locations_'+col
             sns_plot.set(title = fig_name)
-            save_path = os.path.join(df_folder, 'stats_plots_files/' + fig_name + '.png')
+            if not os.path.exists(os.path.join(df_folder, 'stats_plots_files', spp)):
+                os.mkdir(os.path.join(df_folder, 'stats_plots_files', spp))
+            save_path = os.path.join(df_folder, 'stats_plots_files', spp, fig_name + '.png')
             plt.savefig(save_path)
             plt.close(fig)
     

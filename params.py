@@ -1,6 +1,7 @@
 import os
 
 # The location to the folder that stores the data
+# PROJECT_PATH = os.path.join('/Users/mrugankdake/Documents/Sciurid Lab/')
 PROJECT_PATH = os.path.join('/Users/mrugankdake/Documents/Sciurid Lab/')
 
 # The list of species
@@ -48,7 +49,7 @@ columns = ['File_name', 'Species', 'Low Freq (Hz)', 'High Freq (Hz)', 'Delta Fre
                     'Inter_note_difference (s)', 'Location', 'Latitude', 'Longitude', 'Note', 'Quality', 'Bout', 'Sub-bout']
 acoustic_features = ['PFC Max Freq (Hz)',
         'PFC Min Freq (Hz)','BW 90% (Hz)', 'Agg Entropy (bits)','PFC Max Slope (Hz/ms)', 'PFC Avg Slope (Hz/ms)',
-       'PFC Min Slope (Hz/ms)', 'Center Time Rel.', 'Dur 90% (s)', 'PFC Num Inf Pts']
+       'PFC Min Slope (Hz/ms)', 'Center Time Rel.', 'Dur 90% (s)', 'PFC Num Inf Pts', 'Inter_note_difference (s)']
 #acoustic_features = ['Low Freq (Hz)', 'High Freq (Hz)', 'Delta Freq (Hz)','Delta Time (s)', 'Inter_note_difference (s)']
 numerical_columns = ['Low Freq (Hz)', 'High Freq (Hz)', 'Delta Freq (Hz)','Delta Time (s)', 'Inter_note_difference (s)']
 numerical_columns_with_fname = ['File_name', 'Low Freq (Hz)', 'High Freq (Hz)', 'Delta Freq (Hz)','Delta Time (s)', 'Inter_note_difference (s)']
