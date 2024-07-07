@@ -190,7 +190,7 @@ def generate_master_df(species_list, location_df):
                 ann_df['BuiltSettlement2020'] = location_df['Built_settlement_2020'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
                 ann_df['Nightlight2019'] = location_df['Nightlight_2019'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
                 ann_df['ForestCanopy2019'] = location_df['forest_canopy_19(metres)'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
-                ann_df['NDVI'] = location_df['NDVA_19_20'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
+                ann_df['NDVI'] = location_df['NDVI_19_20'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
                 ann_df['Tmean'] = location_df['Tmean_18_19 (C)'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
                 ann_df['Pmean'] = location_df['Pmean_17_18_19(mm)'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
                 ann_df['Tmax'] = location_df['Tmax_18_19(C)'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
