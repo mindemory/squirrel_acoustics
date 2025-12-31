@@ -20,11 +20,26 @@ def screen_tables(species_list):
         annotation_files = [f for f in os.listdir(directory_path) if not f.startswith('.')] # list of all annotation files for a given species
         for annotation_file in annotation_files:
             annotation_path = os.path.join(directory_path, annotation_file)
-            #print(annotation_file)
+            # print(annotation_file)
             ann_df = pd.read_csv(annotation_path, delimiter = '\t')
+
+            # If this is the new version of Raven Pro some columns have new names, so let's fix that
+            if 'SNR NIST Quick (dB)' in ann_df.columns:
+                ann_df.rename(columns = {'SNR NIST Quick (dB)': 'SNR NIST Quick (dB FS)'}, inplace = True)
+            if 'Avg Power Density (dB FS/Hz)' in ann_df.columns:
+                ann_df.rename(columns = {'Avg Power Density (dB FS/Hz)': 'Avg Power Density (dB FS)'}, inplace = True)
+            if 'Delta Power (dB/Hz)' in ann_df.columns:
+                ann_df.rename(columns = {'Delta Power (dB/Hz)': 'Delta Power (dB FS)'}, inplace = True)
+            if 'Energy (dB FS)' in ann_df.columns:
+                ann_df.rename(columns = {'Energy (dB FS)': 'Energy'}, inplace = True)
+            if 'Peak Power Density (dB FS/Hz)' in ann_df.columns:
+                ann_df.rename(columns = {'Peak Power Density (dB FS/Hz)': 'Peak Power Density (dB FS)'}, inplace = True)
+            if 'SNR NIST Quick (dB)' in ann_df.columns:
+                ann_df.rename(columns = {'SNR NIST Quick (dB)': 'SNR NIST Quick (dB FS)'}, inplace = True)
 
             # Check if any column is absent
             present_columns = ann_df.columns
+
             for ac_col in accepted_columns:
                 if ac_col not in present_columns:
                     error += 1
@@ -180,22 +195,28 @@ def generate_master_df(species_list, location_df):
             for bf in ann_df['Begin File'].unique():
                 if bf[:4] == 'Copy':
                     bf = bf[8:]
-                ann_df['Location'] = location_df['Site'][location_df['12_Audio_file_name'].str.lower() ==  bf.lower()].to_numpy()[0]
-                ann_df['Latitude'] = location_df['lat_3_Location'][location_df['12_Audio_file_name'].str.lower() ==  bf.lower()].to_numpy()[0]
-                ann_df['Longitude'] = location_df['long_3_Location'][location_df['12_Audio_file_name'].str.lower() ==  bf.lower()].to_numpy()[0]
+                # Handle cases where .wav might not be present
+                if bf.lower().endswith('.wav'):
+                    base_filename = bf.lower()[:-4]  # Remove .wav extension
+                else:
+                    base_filename = bf.lower()  # Use filename as is
+
+                ann_df['Location'] = location_df['Site'][location_df['12_Audio_file_name'].str.lower().str.contains(base_filename)].to_numpy()[0]
+                ann_df['Latitude'] = location_df['lat_3_Location'][location_df['12_Audio_file_name'].str.lower().str.contains(base_filename)].to_numpy()[0]
+                ann_df['Longitude'] = location_df['long_3_Location'][location_df['12_Audio_file_name'].str.lower().str.contains(base_filename)].to_numpy()[0]
                 # Adding meta-data from layers (June 29 2024)
-                ann_df['HumanPopDensity2019'] = location_df['Human_pop_density_2019_100m'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
-                ann_df['HumanPopDensity2020'] = location_df['Human_pop_density_2020_100m'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
-                ann_df['BuiltSettlement2019'] = location_df['Built_settlement_2019'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
-                ann_df['BuiltSettlement2020'] = location_df['Built_settlement_2020'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
-                ann_df['Nightlight2019'] = location_df['Nightlight_2019'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
-                ann_df['ForestCanopy2019'] = location_df['forest_canopy_19(metres)'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
-                ann_df['NDVI'] = location_df['NDVI_19_20'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
-                ann_df['Tmean'] = location_df['Tmean_18_19 (C)'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
-                ann_df['Pmean'] = location_df['Pmean_17_18_19(mm)'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
-                ann_df['Tmax'] = location_df['Tmax_18_19(C)'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
-                ann_df['Tmin'] = location_df['Tmin_18_19(C)'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
-                ann_df['TempSeasonailty'] = location_df['Temperature seasonality (mm)'][location_df['12_Audio_file_name'].str.lower() == bf.lower()].to_numpy()[0]
+                ann_df['HumanPopDensity2019'] = location_df['Human_pop_density_2019_100m'][location_df['12_Audio_file_name'].str.lower().str.contains(base_filename)].to_numpy()[0]
+                ann_df['HumanPopDensity2020'] = location_df['Human_pop_density_2020_100m'][location_df['12_Audio_file_name'].str.lower().str.contains(base_filename)].to_numpy()[0]
+                ann_df['BuiltSettlement2019'] = location_df['Built_settlement_2019'][location_df['12_Audio_file_name'].str.lower().str.contains(base_filename)].to_numpy()[0]
+                ann_df['BuiltSettlement2020'] = location_df['Built_settlement_2020'][location_df['12_Audio_file_name'].str.lower().str.contains(base_filename)].to_numpy()[0]
+                ann_df['Nightlight2019'] = location_df['Nightlight_2019'][location_df['12_Audio_file_name'].str.lower().str.contains(base_filename)].to_numpy()[0]
+                ann_df['ForestCanopy2019'] = location_df['forest_canopy_19(metres)'][location_df['12_Audio_file_name'].str.lower().str.contains(base_filename)].to_numpy()[0]
+                ann_df['NDVI'] = location_df['NDVI_19_20'][location_df['12_Audio_file_name'].str.lower().str.contains(base_filename)].to_numpy()[0]
+                ann_df['Tmean'] = location_df['Tmean_18_19 (C)'][location_df['12_Audio_file_name'].str.lower().str.contains(base_filename)].to_numpy()[0]
+                ann_df['Pmean'] = location_df['Pmean_17_18_19(mm)'][location_df['12_Audio_file_name'].str.lower().str.contains(base_filename)].to_numpy()[0]
+                ann_df['Tmax'] = location_df['Tmax_18_19(C)'][location_df['12_Audio_file_name'].str.lower().str.contains(base_filename)].to_numpy()[0]
+                ann_df['Tmin'] = location_df['Tmin_18_19(C)'][location_df['12_Audio_file_name'].str.lower().str.contains(base_filename)].to_numpy()[0]
+                ann_df['TempSeasonailty'] = location_df['Temperature seasonality (mm)'][location_df['12_Audio_file_name'].str.lower().str.contains(base_filename)].to_numpy()[0]
                 ann_df
             # For NAN rows, make Quality = P
             for column in acoustic_features:
@@ -266,7 +287,12 @@ def generate_file_df(data, location_df):
             bf = file_df['Begin File'][ii]
             if bf[:4] == 'Copy':
                 bf = bf[8:]
-            temp_aa[ii] = location_df[feat][location_df['12_Audio_file_name'].str.lower() ==  bf.lower()].to_numpy()[0]
+            # Handle cases where .wav might not be present
+            if bf.lower().endswith('.wav'):
+                base_filename = bf.lower()[:-4]  # Remove .wav extension
+            else:
+                base_filename = bf.lower()  # Use filename as is
+            temp_aa[ii] = location_df[feat][location_df['12_Audio_file_name'].str.lower().str.contains(base_filename)].to_numpy()[0]
         file_df[feat] = temp_aa       
     #print(file_df.shape)
     #print(file_df.columns)
