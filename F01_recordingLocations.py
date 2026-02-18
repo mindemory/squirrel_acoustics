@@ -3,10 +3,11 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import geopandas as gpd
-from params import PROJECT_PATH
+from params import PROJECT_PATH, species_colors
 
 # Load Location File
-location_path = os.path.join(PROJECT_PATH, 'locations_dec.csv')
+# Load Location File
+location_path = os.path.join(PROJECT_PATH, 'locations_feb.csv')
 location_df = pd.read_csv(location_path)
 
 # Add extension to file names wherever needed
@@ -190,12 +191,7 @@ else:
 location_species_counts = file_df.groupby(['Location', 'Species', 'Latitude', 'Longitude']).size().reset_index(name='num_recordings')
 
 # Define species colors
-species_colors = {
-    'F. palmarum': '#98003F',
-    'F. pennanti': 'orange',
-    'F. tristriatus': '#5D4EA0',
-    'F. sublineatus': '#55ab0f'
-}
+# species_colors is now imported from params
 
 # Create the map
 fig, ax = plt.subplots(figsize=(10, 10))
@@ -213,11 +209,14 @@ species_dir_mapping = {
     'palmarum': 'F. palmarum',
     'tristriatus': 'F. tristriatus',
     'pennanti': 'F. pennanti',
-    'sublineatus': 'F. sublineatus'
+    'sublineatus': 'F. sublineatus',
+    'layardi': 'F. layardi',
+    'obscurus': 'F. obscurus'
 }
 
 # Plot distribution layers in the desired order
-for dir_name in ['palmarum', 'tristriatus', 'pennanti', 'sublineatus']:
+# Plot distribution layers in the desired order
+for dir_name in ['palmarum', 'tristriatus', 'pennanti', 'sublineatus', 'layardi', 'obscurus']:
     species_name = species_dir_mapping[dir_name]
     shapefile_path = os.path.join(iucn_layers_path, dir_name, 'data_0.shp')
     
@@ -239,7 +238,7 @@ scale_factor = 10  # Adjust this to make points appropriately sized
 base_size = 5  # Base multiplier
 
 # Define the desired species order
-desired_order = ['F. palmarum', 'F. tristriatus', 'F. pennanti', 'F. sublineatus']
+desired_order = ['F. palmarum', 'F. tristriatus', 'F. pennanti', 'F. sublineatus', 'F. layardi', 'F. obscurus']
 
 # Get available species in the desired order
 available_species = [s for s in desired_order if s in location_species_counts['Species'].unique()]

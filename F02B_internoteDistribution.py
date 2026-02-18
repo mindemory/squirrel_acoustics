@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import anderson_ksamp, ks_2samp
 from itertools import combinations
-from params import PROJECT_PATH, species_list, sub_bout_difference_dict_F, bins_dict, bout_difference_dict
+from params import PROJECT_PATH, species_list, sub_bout_difference_dict_F, bins_dict, bout_difference_dict, species_colors
 
 # Load master_df
 df_folder = os.path.join(PROJECT_PATH, 'dataframes')
@@ -61,8 +61,8 @@ x_min, x_max = -0.1, 1.0
 bin_width = 0.01  # Standard bin width in seconds
 bins = np.arange(x_min, x_max + bin_width, bin_width)
 
-# Define species order: palmarum, tristriatus, pennanti, sublineatus
-desired_species_order = ['palmarum', 'tristriatus', 'pennanti', 'sublineatus']
+# Define species order: palmarum, tristriatus, pennanti, sublineatus, layardi, obscurus
+desired_species_order = ['palmarum', 'tristriatus', 'pennanti', 'sublineatus', 'layardi', 'obscurus']
 
 # --- Anderson-Darling k-sample Test ---
 print("\n--- Anderson-Darling k-sample Test (Inter-note Intervals) ---")
@@ -120,22 +120,24 @@ for i, j in pairs:
 
 print("-" * 30)
 
-fig, ax = plt.subplots(nrows=2, ncols=2, dpi=100, figsize=(12, 10), sharex=True, sharey=True)
-fig, ax = plt.subplots(nrows=2, ncols=2, dpi=100, figsize=(12, 10), sharex=True, sharey=True)
+fig, ax = plt.subplots(nrows=2, ncols=3, dpi=100, figsize=(18, 10), sharex=True, sharey=True)
 ax = ax.flatten()  # Flatten to 1D array for easier indexing
 
 # Plotting
 for i in range(len(desired_species_order)):
     spp = desired_species_order[i]
     temp_df = master_df_bout_version[master_df_bout_version['Species'] == 'F. ' + spp]['Inter_note_difference (s)']
-    temp_df.hist(ax=ax[i], density=1, bins=bins, xlabelsize=12, ylabelsize=11, color='skyblue', edgecolor='black', alpha=0.7)
+    
+    color = species_colors.get('F. ' + spp, 'skyblue')
+    temp_df.hist(ax=ax[i], density=1, bins=bins, xlabelsize=12, ylabelsize=11, color=color, edgecolor='black', alpha=0.7)
     
     # Add threshold lines
-    sub_bout_thresh = sub_bout_difference_dict_F['F. ' + spp]
-    bout_thresh = bout_difference_dict[spp]
-    
-    ax[i].axvline(sub_bout_thresh, color='red', linestyle='--', linewidth=1.5, label='Sub-bout Thresh')
-    ax[i].axvline(bout_thresh, color='green', linestyle='-.', linewidth=1.5, label='Bout Thresh')
+    if spp not in ['layardi', 'obscurus']:
+        sub_bout_thresh = sub_bout_difference_dict_F['F. ' + spp]
+        bout_thresh = bout_difference_dict[spp]
+        
+        ax[i].axvline(sub_bout_thresh, color='red', linestyle='--', linewidth=1.5, label='Sub-bout Thresh')
+        ax[i].axvline(bout_thresh, color='green', linestyle='-.', linewidth=1.5, label='Bout Thresh')
     
     ax[i].set_title('F. ' + spp, fontsize=14)
     # Set labels and ticks for all subplots
@@ -167,4 +169,84 @@ plt.savefig(svg_path, format='svg', bbox_inches='tight')
 print(f"Inter-note distribution saved as SVG to: {svg_path}")
 
 plt.close(fig)
+
+# --- Additional Figure: Inter-note Distribution with Split Palmarum (India vs Sri Lanka) ---
+print("\n--- Generating Split Population Figure (Inter-note Intervals) ---")
+
+# Create working copy
+df_split = master_df_bout_version.copy()
+
+# Update Species column
+# master_df already has "F. " prefix in Species column? 
+# Let's check logic: loading master_df (line 11). A01 adds "F. " prefix?
+# Let's assume yes based on other scripts.
+df_split.loc[(df_split['Species'] == 'F. palmarum') & (df_split['Location'] == 'Colombo'), 'Species'] = 'F. palmarum (Sri Lanka)'
+df_split.loc[(df_split['Species'] == 'F. palmarum') & (df_split['Location'] != 'Colombo'), 'Species'] = 'F. palmarum (India)'
+
+# Define new order (full names)
+split_species_order = ['F. palmarum (India)', 'F. palmarum (Sri Lanka)', 'F. tristriatus', 'F. pennanti', 'F. sublineatus', 'F. layardi', 'F. obscurus']
+
+# Setup Figure (2x4 grid to fit 7 plots)
+fig_split, ax_split = plt.subplots(nrows=2, ncols=4, dpi=100, figsize=(24, 10), sharex=True, sharey=True)
+ax_split = ax_split.flatten()
+
+# Extend colors
+species_colors_split = species_colors.copy()
+species_colors_split['F. palmarum (India)'] = species_colors['F. palmarum']
+species_colors_split['F. palmarum (Sri Lanka)'] = species_colors['F. palmarum']
+
+# Plotting
+for i, spp_full in enumerate(split_species_order):
+    temp_df = df_split[df_split['Species'] == spp_full]['Inter_note_difference (s)']
+    
+    color = species_colors_split.get(spp_full, 'skyblue')
+    temp_df.hist(ax=ax_split[i], density=1, bins=bins, xlabelsize=12, ylabelsize=11, color=color, edgecolor='black', alpha=0.7)
+    
+    # Add threshold lines
+    # For split palmarum, we use original palmarum thresholds
+    base_spp_name = spp_full
+    if 'palmarum' in spp_full:
+         base_spp_name = 'F. palmarum'
+    
+    # Extract short name for dict lookup if needed, but dicts use 'F. ' prefix or short name?
+    # sub_bout_difference_dict_F uses 'F. species'
+    # bout_difference_dict uses 'species'
+    
+    # Skip threshold lines for layardi/obscurus
+    # Check if base_spp_name contains layardi or obscurus
+    if 'layardi' not in base_spp_name and 'obscurus' not in base_spp_name:
+         # Need 'species' key for bout_difference_dict (e.g. 'palmarum')
+         short_name = base_spp_name.replace('F. ', '') # 'palmarum'
+         
+         if base_spp_name in sub_bout_difference_dict_F:
+             sub_bout_thresh = sub_bout_difference_dict_F[base_spp_name]
+             ax_split[i].axvline(sub_bout_thresh, color='red', linestyle='--', linewidth=1.5, label='Sub-bout Thresh')
+         
+         if short_name in bout_difference_dict:
+             bout_thresh = bout_difference_dict[short_name]
+             ax_split[i].axvline(bout_thresh, color='green', linestyle='-.', linewidth=1.5, label='Bout Thresh')
+
+    ax_split[i].set_title(spp_full, fontsize=14)
+    ax_split[i].set_xlabel('Internote differences (s)', fontsize=12)
+    ax_split[i].set_ylabel('Frequency (%)', fontsize=12)
+    ax_split[i].set_xlim(x_min, x_max)
+    ax_split[i].set_ylim(0, 15)
+    ax_split[i].grid(False)
+
+# Hide empty subplot (8th one)
+if len(split_species_order) < 8:
+    for j in range(len(split_species_order), 8):
+        ax_split[j].axis('off')
+
+fig_split.subplots_adjust(wspace=0.3, hspace=0.3)
+
+png_path_split = os.path.join(output_dir, 'inter_note_distribution_split.png')
+plt.savefig(png_path_split, dpi=300, bbox_inches='tight')
+print(f"Split inter-note distribution saved as PNG to: {png_path_split}")
+
+svg_path_split = os.path.join(output_dir, 'inter_note_distribution_split.svg')
+plt.savefig(svg_path_split, format='svg', bbox_inches='tight')
+print(f"Split inter-note distribution saved as SVG to: {svg_path_split}")
+
+plt.close(fig_split)
 

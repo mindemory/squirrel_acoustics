@@ -5,7 +5,17 @@ import os
 PROJECT_PATH = os.path.join('/Users/mrugankdake/Documents/Sciurid Lab/')
 
 # The list of species
-species_list = ['palmarum', 'pennanti', 'tristriatus', 'sublineatus']
+species_list = ['palmarum', 'pennanti', 'tristriatus', 'sublineatus', 'layardi', 'obscurus']
+
+# Species Color Mapping
+species_colors = {
+    'F. palmarum': '#98003F',
+    'F. tristriatus': '#5D4EA0',
+    'F. pennanti': 'orange',
+    'F. sublineatus': '#55ab0f',
+    'F. layardi': '#005073',
+    'F. obscurus': '#8B4513'
+}
 
 # All the columns that are present in the final dataframe obtained from RavenPro
 accepted_columns = ['Selection',	'View',	'Channel',	'Begin Time (s)',	'End Time (s)',	'Low Freq (Hz)',
@@ -36,14 +46,14 @@ accepted_elements_note = ['LD', 'RD', 'IU', 'IU-RD', 'IU-LD', 'S', 'IS', 'NS', '
 z_score = 1.96
 
 # The threshold bout and sub-bout internote distance computed using thresholding analysis
-bout_difference_dict = {'palmarum': 0.83, 'pennanti': 1.39, 'tristriatus': 0.71, 'sublineatus': 2.1}
-sub_bout_difference_dict = {'palmarum': 0.15, 'pennanti': 0.1, 'tristriatus': 0.15, 'sublineatus' : 0.1}
-sub_bout_difference_dict_F = {'F. palmarum': 0.15, 'F. pennanti': 0.1, 'F. tristriatus': 0.15, 'F. sublineatus' : 0.1}
+bout_difference_dict = {'palmarum': 0.83, 'pennanti': 1.39, 'tristriatus': 0.71, 'sublineatus': 2.1, 'layardi': 1.0, 'obscurus': 1.0}
+sub_bout_difference_dict = {'palmarum': 0.15, 'pennanti': 0.1, 'tristriatus': 0.15, 'sublineatus' : 0.1, 'layardi': 0.15, 'obscurus': 0.15}
+sub_bout_difference_dict_F = {'F. palmarum': 0.15, 'F. pennanti': 0.1, 'F. tristriatus': 0.15, 'F. sublineatus' : 0.1, 'F. layardi': 0.15, 'F. obscurus': 0.15}
 
 # The sample size of notes computed using Saturation analysis
-sample_threshold_dict = {'F. palmarum': 33, 'F. pennanti': 33, 'F. tristriatus': 70, 'F. sublineatus': 40}
+sample_threshold_dict = {'F. palmarum': 33, 'F. pennanti': 33, 'F. tristriatus': 70, 'F. sublineatus': 40, 'F. layardi': 30, 'F. obscurus': 30}
 
-bins_dict = {'palmarum': 38000, 'pennanti': 15000, 'tristriatus': 6000, 'sublineatus': 4000}
+bins_dict = {'palmarum': 38000, 'pennanti': 15000, 'tristriatus': 6000, 'sublineatus': 4000, 'layardi': 10000, 'obscurus': 10000}
 
 columns = ['File_name', 'Species', 'Low Freq (Hz)', 'High Freq (Hz)', 'Delta Freq (Hz)','Delta Time (s)',
                     'Inter_note_difference (s)', 'Location', 'Latitude', 'Longitude', 'Note', 'Quality', 'Bout', 'Sub-bout']

@@ -5,7 +5,7 @@ import pandas as pd
 import random as rn
 
 # Load files
-from plots import line_with_error
+# from plots import line_with_error
 from params import *
 
 
@@ -193,6 +193,8 @@ def generate_master_df(species_list, location_df):
 
             # Location, Latitude, Longitude
             for bf in ann_df['Begin File'].unique():
+                if not isinstance(bf, str):
+                    continue
                 if bf[:4] == 'Copy':
                     bf = bf[8:]
                 # Handle cases where .wav might not be present

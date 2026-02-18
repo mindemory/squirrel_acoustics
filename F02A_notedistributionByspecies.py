@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import chi2_contingency
-from params import PROJECT_PATH, species_list
+from params import PROJECT_PATH, species_list, species_colors
 
 # Load master_good_df
 df_folder = os.path.join(PROJECT_PATH, 'dataframes')
@@ -64,7 +64,7 @@ print("-" * 30)
 df = df.drop(['Total'], axis=1)
 
 # Reorder columns to match desired species order
-desired_species_order = ['F. palmarum', 'F. tristriatus', 'F. pennanti', 'F. sublineatus']
+desired_species_order = ['F. palmarum', 'F. tristriatus', 'F. pennanti', 'F. sublineatus', 'F. layardi', 'F. obscurus']
 df = df.reindex(columns=[col for col in desired_species_order if col in df.columns])
 
 # Create percentage dataframes
@@ -112,15 +112,17 @@ species_orders = {
     'F. palmarum': ['IU', 'IU-RD', 'IU-LD', 'RD', 'lIU', 'lIU-RD', 'Other'],
     'F. tristriatus': ['IU-RD', 'lIU-RD', 'RD', 'IU', 'lIU', 'IU-LD', 'Other'],
     'F. pennanti': ['IU', 'lIU', 'IU-RD', 'IU-LD', 'RD', 'lIU-RD', 'Other'],
-    'F. sublineatus': ['IU', 'RD', 'IU-LD', 'IU-RD', 'lIU', 'lIU-RD', 'Other']
+    'F. sublineatus': ['IU', 'RD', 'IU-LD', 'IU-RD', 'lIU', 'lIU-RD', 'Other'],
+    'F. layardi': ['IU', 'RD', 'IU-LD', 'IU-RD', 'lIU', 'lIU-RD', 'Other'],
+    'F. obscurus': ['IU', 'RD', 'IU-LD', 'IU-RD', 'lIU', 'lIU-RD', 'Other']
 }
 
 # Create the figure with two subplots
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(15, 8), dpi=100)
 
 # Plot 1: Note abundance and distribution across species (% of all recordings)
-# Use same colors as F01, in order: palmarum, tristriatus, pennanti, sublineatus
-species_colors_subplot0 = ['#98003F', '#5D4EA0', 'orange', '#55ab0f']
+# Use same colors as F01, in order
+species_colors_subplot0 = [species_colors[spp] for spp in desired_species_order if spp in df_pct_all.index or spp in df_pct_all.columns]
 df_pct_all.plot.barh(ax=axes[0], color=species_colors_subplot0, stacked=True,
                      title='\nNote abundance and distribution across species\n', rot=0)
 axes[0].set_xlabel('% of note count across all recordings')
@@ -218,4 +220,116 @@ plt.savefig(svg_path, format='svg', bbox_inches='tight')
 print(f"Note distribution saved as SVG to: {svg_path}")
 
 plt.close(fig)
+
+# --- Additional Figure: Note Distribution with Split Palmarum (India vs Sri Lanka) ---
+print("\n--- Generating Split Population Figure (India vs Sri Lanka) ---")
+
+# Create a working copy for split analysis
+df_split = master_good_df.copy()
+
+# Update Species column for F. palmarum based on Location
+# Note: 'Colombo' is the location for Sri Lanka
+df_split.loc[(df_split['Species'] == 'F. palmarum') & (df_split['Location'] == 'Colombo'), 'Species'] = 'F. palmarum (Sri Lanka)'
+df_split.loc[(df_split['Species'] == 'F. palmarum') & (df_split['Location'] != 'Colombo'), 'Species'] = 'F. palmarum (India)'
+
+# Define new species list and colors
+split_species_order = ['F. palmarum (India)', 'F. palmarum (Sri Lanka)', 'F. tristriatus', 'F. pennanti', 'F. sublineatus', 'F. layardi', 'F. obscurus']
+
+# Create Note Counts for Split Data
+df_counts_split = pd.DataFrame()
+for spp_full in split_species_order:
+    # Handle the fact that species_list in params doesn't have the split names
+    # and master_good_df 'Species' column already has 'F. ' prefix
+    spec_count = pd.DataFrame()
+    spec_count[spp_full] = df_split[df_split['Species'] == spp_full]['Note'].value_counts()
+    df_counts_split = pd.concat([df_counts_split, spec_count], axis=1)
+
+df_counts_split = df_counts_split.fillna(0).astype('int32')
+
+# Create percentage dataframes for Split Data
+# Subplot 0: % of note count across all recordings
+total_all_notes_split = df_counts_split.sum().sum()
+df_pct_all_split = (df_counts_split / total_all_notes_split * 100).round(2)
+
+# Subplot 1: Group notes
+df_species_grouped_split = pd.DataFrame()
+for col in df_counts_split.columns:
+    species_data = df_counts_split[col].copy()
+    grouped_data = pd.Series(dtype='float64')
+    
+    for note in notes_to_keep:
+        if note in species_data.index:
+            grouped_data[note] = species_data[note]
+    
+    other_notes = [note for note in species_data.index if note not in notes_to_keep]
+    if other_notes:
+        other_sum = species_data[other_notes].sum()
+        if other_sum > 0:
+            grouped_data['Other'] = other_sum
+    
+    df_species_grouped_split[col] = grouped_data
+
+df_species_grouped_split = df_species_grouped_split.fillna(0).astype('int32')
+df_species_grouped_split = df_species_grouped_split.reindex(columns=split_species_order)
+
+# Calculate percentages for subplot 1
+df_pct_species_split = df_species_grouped_split.copy()
+for col in df_pct_species_split.columns:
+    species_total = df_pct_species_split[col].sum()
+    if species_total > 0:
+        df_pct_species_split[col] = (df_pct_species_split[col] / species_total * 100).round(2)
+
+# Extend species_colors for the split keys
+# Both populations of palmarum get the same color
+species_colors_split = species_colors.copy()
+species_colors_split['F. palmarum (India)'] = species_colors['F. palmarum']
+species_colors_split['F. palmarum (Sri Lanka)'] = species_colors['F. palmarum']
+
+# Define note orders for split keys (same as original palmarum)
+species_orders_split = species_orders.copy()
+species_orders_split['F. palmarum (India)'] = species_orders['F. palmarum']
+species_orders_split['F. palmarum (Sri Lanka)'] = species_orders['F. palmarum']
+
+# Create the figure
+fig_split, axes_split = plt.subplots(nrows=1, ncols=2, figsize=(18, 8), dpi=100)
+
+# Plot 1
+colors_subplot0_split = [species_colors_split[spp] for spp in split_species_order if spp in df_pct_all_split.index or spp in df_pct_all_split.columns]
+df_pct_all_split.plot.barh(ax=axes_split[0], color=colors_subplot0_split, stacked=True,
+                     title='\nNote abundance across populations\n', rot=0)
+axes_split[0].set_xlabel('% of note count across all recordings')
+
+# Plot 2
+x_positions_split = np.arange(len(df_pct_species_split.columns))
+notes_in_legend_split = set()
+
+for i, species_col in enumerate(df_pct_species_split.columns):
+    order = species_orders_split.get(species_col, [])
+    current_bottom = 0
+    for note in order:
+        if note in df_pct_species_split.index:
+            value = df_pct_species_split.loc[note, species_col]
+            if value > 0:
+                axes_split[1].bar(i, value, bottom=current_bottom, 
+                           color=note_color_map.get(note, 'gray'),
+                           label=note if note not in notes_in_legend_split else '')
+                notes_in_legend_split.add(note)
+                current_bottom += value
+
+axes_split[1].set_xticks(x_positions_split)
+axes_split[1].set_xticklabels(df_pct_species_split.columns, rotation=45, ha='right')
+axes_split[1].set_ylabel('% of notes for that species/population')
+axes_split[1].set_title('\nNote distribution within populations\n')
+axes_split[1].legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+
+# Save Split Figure
+png_path_split = os.path.join(output_dir, 'note_distribution_split.png')
+plt.savefig(png_path_split, dpi=300, bbox_inches='tight')
+print(f"Split note distribution saved as PNG to: {png_path_split}")
+
+svg_path_split = os.path.join(output_dir, 'note_distribution_split.svg')
+plt.savefig(svg_path_split, format='svg', bbox_inches='tight')
+print(f"Split note distribution saved as SVG to: {svg_path_split}")
+
+plt.close(fig_split)
 

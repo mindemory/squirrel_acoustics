@@ -28,7 +28,7 @@ def main():
                 print(f"Deleted {f}")
 
     # Load Location File (Logic from dataframes_creator.py)
-    location_path = os.path.join(PROJECT_PATH, 'locations_dec.csv')
+    location_path = os.path.join(PROJECT_PATH, 'locations_feb.csv')
     if not os.path.exists(location_path):
         print(f"Error: Location file not found at {location_path}")
         return

@@ -18,8 +18,12 @@ from params import PROJECT_PATH, acoustic_features, species_colors
 # from dimensionality_analysis import pca_analysis, umap_analysis # Unused and caused import error
 
 # --- Configuration ---
-SPECIES_COLORS = species_colors
-SPECIES_ORDER = ['F. palmarum', 'F. tristriatus', 'F. pennanti', 'F. sublineatus', 'F. layardi', 'F. obscurus']
+# Create a local copy of colors to add split populations
+SPECIES_COLORS = species_colors.copy()
+SPECIES_COLORS['F. palmarum (India)'] = SPECIES_COLORS['F. palmarum']  # Keep original (#98003F)
+SPECIES_COLORS['F. palmarum (Sri Lanka)'] = '#E63E6D'  # Lighter/Brighter variation for distinction
+
+SPECIES_ORDER = ['F. palmarum (India)', 'F. palmarum (Sri Lanka)', 'F. tristriatus', 'F. pennanti', 'F. sublineatus', 'F. layardi', 'F. obscurus']
 
 # --- Helper Functions ---
 
@@ -234,11 +238,18 @@ if 'Inter_note_difference (s)' in master_random_df.columns:
     before_count = len(master_random_df)
     master_random_df = master_random_df[master_random_df['Inter_note_difference (s)'] >= 0]
     print(f"Removed {before_count - len(master_random_df)} rows with negative intervals.")
-    y = master_random_df['Species']
+    print(f"Removed {before_count - len(master_random_df)} rows with negative intervals.")
+
+# --- Split Palmarum Populations ---
+print("Splitting F. palmarum into India and Sri Lanka populations...")
+master_random_df.loc[(master_random_df['Species'] == 'F. palmarum') & (master_random_df['Location'] == 'Colombo'), 'Species'] = 'F. palmarum (Sri Lanka)'
+master_random_df.loc[(master_random_df['Species'] == 'F. palmarum') & (master_random_df['Location'] != 'Colombo'), 'Species'] = 'F. palmarum (India)'
+
+y = master_random_df['Species']
 
 X_all = master_random_df[acoustic_features]
 
-save_dir = os.path.join(PROJECT_PATH, 'Figures', 'dimred')
+save_dir = os.path.join(PROJECT_PATH, 'Figures', 'dimred_split')
 print(f"Clearing output directory: {save_dir}")
 clear_output_dir(save_dir)
 
@@ -382,7 +393,7 @@ plot_projection_complex(
     f"LD2 ({lda.explained_variance_ratio_[1]*100:.1f}%)",
     os.path.join(save_dir, 'lda_all_features.png'),
     wspace=0.3, # Increased space between plots
-    legend_loc='upper left'
+    legend_loc='upper right'
 )
 print(f"Saved Figure 3C to: lda_all_features.png")
 
